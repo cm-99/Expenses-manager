@@ -7,28 +7,28 @@ import java.util.Objects;
 
 public class LoginPage extends JFrame{
 
-    private static final JPanel panel = new JPanel();
-
-    private static final JLabel usernameLabel = new JLabel("Username");
-    private static final JLabel passwordLabel = new JLabel("Password");
-
-    private static final JTextField usernameField = new JTextField();
-    private static final JPasswordField passwordField = new JPasswordField();
-
-    private static final JButton loginButton = new JButton("Login");
-    private static final JButton createNewProfileButton = new JButton("Create new profile");
-
     LoginPage(){
 
-        //Set frame parameters
+        // Set frame parameters
         this.setTitle("Expenses Manager");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 250);
 
-        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ExpensesManagerIcon.jpg")));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ExpensesManagerIcon.png")));
         this.setIconImage(icon.getImage());
 
-        // Set parameters of all the GUI variables
+        // Create all GUI components and set their parameters
+        JPanel panel = new JPanel();
+
+        JLabel usernameLabel = new JLabel("Username");
+        JLabel passwordLabel = new JLabel("Password");
+
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+
+        JButton loginButton = new JButton("Login");
+        JButton createNewProfileButton = new JButton("Create new profile");
+
         int frameCenterXpos = this.getWidth() - (this.getWidth() / 2);
 
         usernameField.setBounds(frameCenterXpos - 95, 30, 190, 30);
@@ -40,7 +40,11 @@ public class LoginPage extends JFrame{
         loginButton.setBounds(frameCenterXpos - 35, this.getHeight() - 110, 70, 25);
         loginButton.setForeground(Color.WHITE);
         loginButton.setBackground(Color.BLACK);
-        loginButton.addActionListener((ActionEvent event) -> System.out.println("You pressed button #1"));
+        loginButton.addActionListener((ActionEvent event) ->
+        {
+            new HomePage();
+            this.dispose();
+        });
 
         createNewProfileButton.setBounds(frameCenterXpos - 70, this.getHeight() - 80, 140, 25);
         createNewProfileButton.setForeground(Color.WHITE);
@@ -48,7 +52,7 @@ public class LoginPage extends JFrame{
         createNewProfileButton.addActionListener((ActionEvent event) -> System.out.println("You pressed button #2"));
 
         // Might be useful later
-        //{JOptionPane.showMessageDialog(this, "Username or password incorrect");});
+        // {JOptionPane.showMessageDialog(this, "Username or password incorrect");});
 
         panel.setLayout(null);
         panel.add(usernameLabel);
