@@ -121,6 +121,7 @@ public class LoginPage extends JFrame{
                 try {
                     if(file.createNewFile()){
                         applicationController.requestLocalProfileLoading(file);
+                        this.dispose();
                     }
                     else{
                         JOptionPane.showMessageDialog(this, "Profile already exists");

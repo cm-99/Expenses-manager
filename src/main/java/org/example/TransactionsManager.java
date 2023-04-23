@@ -51,7 +51,7 @@ public class TransactionsManager {
         {
             if (transaction1.getDate().isEqual(transaction2.getDate()))
                 return 0;
-            return transaction1.getDate().isBefore(transaction2.getDate()) ? -1 : 1;
+            return transaction1.getDate().isAfter(transaction2.getDate()) ? -1 : 1;
         });
     }
 
