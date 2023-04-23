@@ -13,13 +13,13 @@ For those who would rather see it in action, wait a moment, gif with a simple de
 
 Unfortunately, not much can be seen because the technology which I am using does not record pop-up menus, so here are some screens of logging and transaction creation/editing:
 **Creating new profile**
-![alt text](createProfileScreen.jpg)
+![alt text](createProfileScreen.png)
 **Logging in**
-![alt text](loggingScreen.jpg)
+![alt text](loggingScreen.png)
 **Adding transaction**
-![alt text](TransactionCreator_createMode.jpg)
+![alt text](TransactionCreator_createMode.png)
 **Updating/deleting transaction**
-![alt text](TransactionCreator_EditMode.jpg)
+![alt text](TransactionCreator_EditMode.png)
 
 ## Built with
 JDK 20
