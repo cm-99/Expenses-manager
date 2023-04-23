@@ -1,18 +1,31 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 public class LoginPage extends JFrame{
 
-    LoginPage(){
+    private final ApplicationController applicationController;
+    private final JTextField usernameField;
+    private final JLabel usernameLabel;
+    private final JButton loginButton;
+
+    LoginPage(ApplicationController applicationController){
+
+        if(applicationController == null){
+            throw new IllegalArgumentException("Parameter 'applicationController' cannot be null");
+        }
+        this.applicationController = applicationController;
 
         // Set frame parameters
         this.setTitle("Expenses Manager");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(400, 250);
+        this.setSize(400, 200);
 
         ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ExpensesManagerIcon.png")));
         this.setIconImage(icon.getImage());
@@ -20,51 +33,106 @@ public class LoginPage extends JFrame{
         // Create all GUI components and set their parameters
         JPanel panel = new JPanel();
 
-        JLabel usernameLabel = new JLabel("Username");
-        JLabel passwordLabel = new JLabel("Password");
+        usernameField = new JTextField();
+        usernameField.setBounds(this.getWidth()/2 - 95, 30, 190, 30);
+        ((AbstractDocument) usernameField.getDocument()).setDocumentFilter(new FileNameFilter());
 
-        JTextField usernameField = new JTextField();
-        JPasswordField passwordField = new JPasswordField();
+        usernameLabel = new JLabel("Local profile name");
+        usernameLabel.setBounds(usernameField.getX(), usernameField.getY() - 20, 150, 20);
 
-        JButton loginButton = new JButton("Login");
-        JButton createNewProfileButton = new JButton("Create new profile");
-
-        int frameCenterXpos = this.getWidth() - (this.getWidth() / 2);
-
-        usernameField.setBounds(frameCenterXpos - 95, 30, 190, 30);
-        passwordField.setBounds(frameCenterXpos - 95, 80, 190, 30);
-
-        usernameLabel.setBounds(usernameField.getX(), usernameField.getY() - 20, 70, 20);
-        passwordLabel.setBounds(passwordField.getX(), passwordField.getY() - 20, 70, 20);
-
-        loginButton.setBounds(frameCenterXpos - 35, this.getHeight() - 110, 70, 25);
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setBackground(Color.BLACK);
-        loginButton.addActionListener((ActionEvent event) ->
-        {
-            new HomePage();
-            this.dispose();
-        });
-
-        createNewProfileButton.setBounds(frameCenterXpos - 70, this.getHeight() - 80, 140, 25);
-        createNewProfileButton.setForeground(Color.WHITE);
-        createNewProfileButton.setBackground(Color.BLACK);
-        createNewProfileButton.addActionListener((ActionEvent event) -> System.out.println("You pressed button #2"));
+        loginButton = prepareLoginButton();
+        JButton createNewProfileButton = prepareNewProfileButton();
 
         // Might be useful later
         // {JOptionPane.showMessageDialog(this, "Username or password incorrect");});
 
         panel.setLayout(null);
         panel.add(usernameLabel);
-        panel.add(passwordLabel);
         panel.add(usernameField);
-        panel.add(passwordField);
         panel.add(loginButton);
         panel.add(createNewProfileButton);
 
         this.add(panel);
         this.setLocationByPlatform(true);
         this.setResizable(false);
-        this.setVisible(true);
+    }
+
+    private JButton prepareLoginButton() {
+        JButton loginButton = new JButton("Login");
+        loginButton.setBounds(this.getWidth()/2 - 35, this.getHeight() - 110, 70, 25);
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setBackground(Color.BLACK);
+        loginButton.addActionListener((ActionEvent event) ->
+        {
+            String directory = System.getProperty("user.dir");
+            File file = new File(directory);
+            File[] filesInDirectory = file.listFiles();
+            if (filesInDirectory == null) {
+                throw new AssertionError("No files in current working directory found");
+            }
+
+            String profileFileName = usernameField.getText() + ".csv";
+            File localProfileFile = null;
+
+            // Check if local profile exists in current working directory, request loading if true
+            for(File f : filesInDirectory){
+                if(f.getName().equals(profileFileName)){
+                    localProfileFile = f;
+                    break;
+                }
+            }
+
+            if(localProfileFile != null){
+                applicationController.requestLocalProfileLoading(localProfileFile);
+                this.dispose();
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Profile name incorrect or file is missing");
+            }
+        });
+
+        return loginButton;
+    }
+
+    private JButton prepareNewProfileButton(){
+        JButton createNewProfileButton = new JButton("Create new local profile");
+        createNewProfileButton.setBounds(this.getWidth()/2 - 90, this.getHeight() - 80, 180, 25);
+        createNewProfileButton.setForeground(Color.WHITE);
+        createNewProfileButton.setBackground(Color.BLACK);
+        createNewProfileButton.addActionListener((ActionListener) ->
+        {
+            usernameLabel.setText("New local profile name");
+            usernameLabel.setBounds(usernameField.getX(), usernameField.getY() - 20, 150, 20);
+            createNewProfileButton.setEnabled(false);
+
+            loginButton.setText("Create profile");
+            loginButton.setBounds(this.getWidth()/2 - 60, this.getHeight() - 110, 120, 25);
+
+            this.repaint();
+
+            // Remove all button action listeners probably should be included in some subclass of JButton
+            TransactionCreator.removeAllButtonActionListeners(loginButton);
+            // Login button changes to create profile button
+            loginButton.addActionListener((ActionListener2) ->
+            {
+                String directory = System.getProperty("user.dir");
+                File file = new File(directory + "/" + usernameField.getText() + ".csv");
+
+                try {
+                    if(file.createNewFile()){
+                        applicationController.requestLocalProfileLoading(file);
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(this, "Profile already exists");
+                    }
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        return createNewProfileButton;
     }
 }
+
