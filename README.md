@@ -12,14 +12,18 @@ For those who would rather see it in action, wait a moment, gif with a simple de
 ![alt text](demo/expenses_manager_demo.gif)
 
 Unfortunately, not much can be seen because the technology which I am using does not record pop-up menus, so here are some screens of logging and transaction creation/editing:
+
 **Creating new profile**
 ![alt text](demo/createProfileScreen.png)
+
 **Logging in**
 ![alt text](demo/loggingScreen.png)
+
 **Adding transaction**
 ![alt text](demo/TransactionCreator_createMode.png)
+
 **Updating/deleting transaction**
-![alt text](demo/TransactionCreator_EditMode.png)
+![alt text](demo/TransactionCreator_editMode.png)
 
 ## Built with
 JDK 20
