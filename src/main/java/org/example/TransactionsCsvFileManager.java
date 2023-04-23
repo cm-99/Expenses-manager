@@ -7,7 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 public class TransactionsCsvFileManager implements StringConvertableObjectsCsvImportAndExport{
-    private File transactionsDataFile;
+    private final File transactionsDataFile;
 
     public TransactionsCsvFileManager(File file){
         if(file == null){
